@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Test & Coverage
+coverage/
+
+# Build & Archives
+dist/
+*.zip
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Logs & Local Config
+*.log
+.agents/

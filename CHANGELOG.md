@@ -1,0 +1,30 @@
+# Changelog
+
+All notable changes to CopyPasta will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.0.0] — 2026-09-29
+
+### Changed
+- **Zero-Build Architecture**: Migrated to native Manifest V3 ES modules directly loadable as an unpacked extension from the repository root. Dropped all bundlers, transpilers, and build dependencies.
+- **Deep Module Design**: Consolidated separate matching, rule generation, storage management, and script registration into a single, cohesive `SitePolicy` module with a minimal 3-method public interface (`getStatus`, `toggle`, `list`).
+- **Unified Popup UI**: Integrated site configuration and subdomain matching directly into an accordion drawer inside the toolbar popup, eliminating the need for a separate options page.
+- **Native Test Suite**: Replaced Vitest with Node.js built-in test runner (`node --test`), providing sub-200ms zero-dependency unit tests.
+- **Pure CSS**: Streamlined styling with a dark-mode-ready native CSS stylesheet complying with strict Chrome Content Security Policy.
+
+### Security & Privacy
+- Zero build dependencies, zero runtime dependencies, and zero network calls.
+- Preserved strict opt-in model: content scripts execute only on origins explicitly enabled by the user.
+
+---
+
+## [1.0.0] — 2026-03-21
+
+### Added
+- Initial release of CopyPasta.
+- Dynamic content script registration via `chrome.scripting.registerContentScripts` running in the `MAIN` execution world at `document_start`.
+- Context-aware toolbar popup reflecting enabled/disabled state per site.
+- Storage synchronization across devices via `chrome.storage.sync` with local fallback.
+- Subdomain matching support.

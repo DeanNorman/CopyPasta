@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CopyPasta</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <div class="popup-container">
+      <!-- Header -->
+      <div class="header">
+        <svg class="header-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <rect x="8" y="2" width="13" height="17" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M8 5H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M14 11l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="header-title">CopyPasta</span>
+      </div>
+
+      <!-- Main Body -->
+      <div class="body">
+        <div id="view-no-web" class="no-web-box view-hidden">
+          <p>Navigate to a website to enable CopyPasta for it.</p>
+        </div>
+
+        <div id="view-site" class="view-hidden">
+          <!-- Top Row: Hostname and Switch -->
+          <div class="site-row">
+            <div class="site-info">
+              <p id="site-hostname" class="site-hostname"></p>
+              <p id="site-origin" class="site-origin"></p>
+            </div>
+            <button id="site-toggle" class="switch" role="switch" aria-checked="false" aria-label="Toggle CopyPasta for this site">
+              <span class="switch-thumb"></span>
+            </button>
+          </div>
+
+          <!-- Status Row -->
+          <div class="status-row">
+            <span id="status-badge" class="badge"></span>
+            <span id="status-desc" class="status-desc"></span>
+          </div>
+
+          <!-- Reload Hint Banner -->
+          <div id="reload-hint" class="reload-hint view-hidden">
+            <span>Reload the page if paste doesn't take effect immediately.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion Drawer: Manage Sites -->
+      <button id="drawer-toggle" class="drawer-toggle" aria-expanded="false" aria-controls="drawer-panel">
+        <span id="drawer-count">Enabled sites (0)</span>
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <div id="drawer-panel" class="drawer-panel">
+        <div id="drawer-list" class="drawer-list"></div>
+        <div id="drawer-empty" class="empty-drawer view-hidden">
+          No sites configured yet.
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CopyPasta Test Playground</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 640px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.5;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      margin-top: 8px;
+      box-sizing: border-box;
+      outline: none;
+    }
+    input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+    .status {
+      font-size: 13px;
+      margin-top: 8px;
+      font-weight: 500;
+      min-height: 20px;
+    }
+    .blocked { color: #dc2626; }
+    .success { color: #16a34a; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 9999px;
+      background: #fee2e2;
+      color: #991b1b;
+      margin-bottom: 6px;
+    }
+    .counter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍝 CopyPasta Test Playground</h1>
+  <p style="color: #64748b; font-size: 14px;">
+    This page simulates hostile web pages that deliberately block clipboard actions (Event Listeners and inline HTML attributes).
+  </p>
+
+  <div class="card">
+    <span class="badge">Test 1: addEventListener paste blocker</span>
+    <label for="input-listener" style="display:block; font-weight:600;">Blocked via <code>addEventListener('paste', preventDefault)</code>:</label>
+    <input type="text" id="input-listener" placeholder="Try pasting here...">
+    <div id="status-1" class="status"></div>
+    <div id="counter-1" class="counter-pill" style="display:none;">Spam count: <span id="count-num-1">0</span></div>
+  </div>
+
+  <div class="card">
+    <span class="badge">Test 2: Inline HTML onpaste blocker</span>
+    <label for="input-inline" style="display:block; font-weight:600;">Blocked via <code>onpaste="return false;"</code>:</label>
+    <input type="text" id="input-inline" onpaste="document.getElementById('status-2').textContent = '❌ Blocked by onpaste inline handler!'; document.getElementById('status-2').className = 'status blocked'; return false;" placeholder="Try pasting here...">
+    <div id="status-2" class="status"></div>
+    <div id="counter-2" class="counter-pill" style="display:none;">Spam count: <span id="count-num-2">0</span></div>
+  </div>
+
+  <div class="card">
+    <span class="badge">Test 3: Triple Blocker (Copy, Cut & Paste blocked)</span>
+    <label for="input-copycut" style="display:block; font-weight:600;">Blocks <code>copy</code>, <code>cut</code>, AND <code>paste</code>:</label>
+    <input type="text" id="input-copycut" value="Secret password or text you want to copy, cut, or paste over">
+    <div id="status-3" class="status"></div>
+    <div id="counter-3" class="counter-pill" style="display:none;">Clipboard actions allowed: <span id="count-num-3">0</span></div>
+  </div>
+
+  <script>
+    let spam1 = 0;
+    let spam2 = 0;
+    let spam3 = 0;
+
+    // Test 1 logic
+    const input1 = document.getElementById('input-listener');
+    const status1 = document.getElementById('status-1');
+    const counter1 = document.getElementById('counter-1');
+    const countNum1 = document.getElementById('count-num-1');
+    
+    input1.addEventListener('paste', (e) => {
+      // If website script reaches here, CopyPasta is NOT active on this page
+      e.preventDefault();
+      status1.textContent = '❌ Blocked by addEventListener!';
+      status1.className = 'status blocked';
+    });
+    input1.addEventListener('input', () => {
+      spam1++;
+      counter1.style.display = 'inline-flex';
+      countNum1.textContent = spam1;
+      status1.textContent = '✅ Paste allowed through! (Interception active)';
+      status1.className = 'status success';
+    });
+
+    // Test 2 logic
+    const input2 = document.getElementById('input-inline');
+    const status2 = document.getElementById('status-2');
+    const counter2 = document.getElementById('counter-2');
+    const countNum2 = document.getElementById('count-num-2');
+    input2.addEventListener('input', () => {
+      spam2++;
+      counter2.style.display = 'inline-flex';
+      countNum2.textContent = spam2;
+      status2.textContent = '✅ Paste allowed through! (Inline onpaste bypassed)';
+      status2.className = 'status success';
+    });
+
+    // Test 3 logic
+    const input3 = document.getElementById('input-copycut');
+    const status3 = document.getElementById('status-3');
+    const counter3 = document.getElementById('counter-3');
+    const countNum3 = document.getElementById('count-num-3');
+
+    input3.addEventListener('copy', (e) => {
+      e.preventDefault();
+      status3.textContent = '❌ Copy was blocked by website!';
+      status3.className = 'status blocked';
+    });
+    input3.addEventListener('cut', (e) => {
+      e.preventDefault();
+      status3.textContent = '❌ Cut was blocked by website!';
+      status3.className = 'status blocked';
+    });
+    input3.addEventListener('paste', (e) => {
+      e.preventDefault();
+      status3.textContent = '❌ Paste was blocked by website!';
+      status3.className = 'status blocked';
+    });
+
+    // Capture success events when CopyPasta unblocks them
+    window.addEventListener('copy', (e) => {
+      if (document.activeElement === input3) {
+        spam3++;
+        counter3.style.display = 'inline-flex';
+        countNum3.textContent = spam3;
+        status3.textContent = '✅ Copied to clipboard! (Copy block bypassed)';
+        status3.className = 'status success';
+      }
+    }, false);
+
+    window.addEventListener('cut', (e) => {
+      if (document.activeElement === input3) {
+        spam3++;
+        counter3.style.display = 'inline-flex';
+        countNum3.textContent = spam3;
+        status3.textContent = '✅ Cut to clipboard! (Cut block bypassed)';
+        status3.className = 'status success';
+      }
+    }, false);
+
+    input3.addEventListener('input', () => {
+      spam3++;
+      counter3.style.display = 'inline-flex';
+      countNum3.textContent = spam3;
+      status3.textContent = '✅ Pasted into field! (Paste block bypassed)';
+      status3.className = 'status success';
+    });
+  </script>
+</body>
+</html>

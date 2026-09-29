@@ -1,0 +1,32 @@
+{
+  "name": "copypasta",
+  "version": "2.0.0",
+  "description": "Restores copy, cut, and paste on sites that block it. Opt-in, per-site. No telemetry. Zero build dependencies.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "Dean Norman",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeanNorman/CopyPasta.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DeanNorman/CopyPasta/issues"
+  },
+  "homepage": "https://github.com/DeanNorman/CopyPasta#readme",
+  "keywords": [
+    "chrome-extension",
+    "manifest-v3",
+    "clipboard",
+    "paste-blocker",
+    "productivity",
+    "zero-dependencies"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "generate-icons": "node scripts/generate-icons.js"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268"
+  }
+}
