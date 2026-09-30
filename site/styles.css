@@ -1,3 +1,8 @@
+@font-face { font-family: 'M PLUS Rounded 1c'; font-weight: 500; font-display: swap; src: url(fonts/m-plus-rounded-1c-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'M PLUS Rounded 1c'; font-weight: 800; font-display: swap; src: url(fonts/m-plus-rounded-1c-latin-800-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 400; font-display: swap; src: url(fonts/jetbrains-mono-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 600; font-display: swap; src: url(fonts/jetbrains-mono-latin-600-normal.woff2) format('woff2'); }
+
 :root {
   --cream: #FFF6E6;
   --ink: #2B2330;

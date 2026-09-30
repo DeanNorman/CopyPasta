@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-// Generates active/inactive clipboard PNG icons for 16, 32, 48, 128 sizes
+// Generates active/inactive pixel-bowl PNG icons for 16, 32, 48, 128 sizes
 // Uses only Node.js built-ins: fs, zlib, path
 
 import { writeFileSync, mkdirSync } from 'node:fs';
@@ -70,82 +70,45 @@ function encodePNG(width, height, getRGBA) {
 }
 
 // ── Icon pixel renderers ──────────────────────────────────────────────────────
-// Colors: active = indigo #4f46e5, inactive = gray #9ca3af
-// Background: active = light indigo #eef2ff, inactive = light gray #f9fafb
+// The 16x16 pixel bowl from the website (site/index.html, symbol #px-bowl).
+// Each layer is [colour, [[x, y, width], ...]]: one-pixel-high runs, drawn in order.
+const BOWL = [
+  ['#FFF6E6', [[2, 8, 12], [2, 9, 2], [5, 9, 6], [12, 9, 2], [2, 10, 1], [4, 10, 3], [9, 10, 3], [13, 10, 1], [3, 11, 10], [4, 12, 8]]],
+  ['#FFCF5C', [[6, 4, 1], [9, 4, 1], [4, 5, 8], [3, 6, 10]]],
+  ['#E8553D', [[7, 3, 2], [7, 4, 2], [2, 7, 12]]],
+  ['#FF8FA3', [[3, 10, 1], [12, 10, 1]]],
+  ['#5FA35A', [[7, 2, 2]]],
+  ['#120E14', [[6, 3, 1], [9, 3, 1], [4, 4, 2], [10, 4, 2], [3, 5, 1], [12, 5, 1], [2, 6, 1], [13, 6, 1], [1, 7, 1], [14, 7, 1], [1, 8, 1], [14, 8, 1], [1, 9, 1], [4, 9, 1], [11, 9, 1], [14, 9, 1], [1, 10, 1], [7, 10, 2], [14, 10, 1], [2, 11, 1], [13, 11, 1], [3, 12, 1], [12, 12, 1], [4, 13, 8], [6, 14, 4]]],
+];
 
 function hexToRGB(hex) {
   const n = parseInt(hex.slice(1), 16);
   return [(n >> 16) & 0xff, (n >> 8) & 0xff, n & 0xff];
 }
 
-const ACTIVE_FG = hexToRGB('#4f46e5');
-const ACTIVE_BG = hexToRGB('#eef2ff');
-const INACTIVE_FG = hexToRGB('#9ca3af');
-const INACTIVE_BG = hexToRGB('#f9fafb');
-
-function drawIcon(x, y, w, h, active) {
-  const fg = active ? ACTIVE_FG : INACTIVE_FG;
-  const bg = active ? ACTIVE_BG : INACTIVE_BG;
-
-  // Normalised coords [0,1]
-  const nx = x / w;
-  const ny = y / h;
-
-  // Draw a simple clipboard shape
-  // Main page rect: 0.33..0.95 x, 0.08..0.96 y
-  const inPage = nx >= 0.33 && nx <= 0.95 && ny >= 0.08 && ny <= 0.96;
-  // Page border (2px stroke equivalent)
-  const borderT = 0.02;
-  const onPageBorder = inPage && (
-    nx <= 0.33 + borderT || nx >= 0.95 - borderT ||
-    ny <= 0.08 + borderT || ny >= 0.96 - borderT
-  );
-
-  // Back page rect: 0.05..0.67 x, 0.20..0.96 y
-  const inBack = nx >= 0.05 && nx <= 0.67 && ny >= 0.20 && ny <= 0.96;
-  const onBackBorder = inBack && (
-    nx <= 0.05 + borderT || nx >= 0.67 - borderT ||
-    ny <= 0.20 + borderT || ny >= 0.96 - borderT
-  );
-
-  // Checkmark (active) or lines (inactive) in main page body
-  const inPageBody = nx >= 0.33 + borderT && nx <= 0.95 - borderT &&
-                     ny >= 0.08 + borderT && ny <= 0.96 - borderT;
-
-  let r, g, b, a = 255;
-
-  if (onPageBorder || onBackBorder) {
-    [r, g, b] = fg;
-  } else if (inPage) {
-    [r, g, b] = bg;
-    // Draw checkmark (active) in the body
-    if (active && inPageBody) {
-      // Simple diagonal checkmark: two line segments
-      // Down-left: nx 0.42..0.62, ny 0.45..0.70
-      // Up-right:  nx 0.62..0.85, ny 0.70..0.38
-      const inCheck1 = Math.abs((ny - 0.45) - (nx - 0.42) * (0.70 - 0.45) / (0.62 - 0.42)) < 0.06;
-      const inCheck2 = Math.abs((ny - 0.70) - (nx - 0.62) * (0.38 - 0.70) / (0.85 - 0.62)) < 0.06;
-      const inCheckRange1 = nx >= 0.42 && nx <= 0.62;
-      const inCheckRange2 = nx >= 0.62 && nx <= 0.85;
-      if ((inCheck1 && inCheckRange1) || (inCheck2 && inCheckRange2)) {
-        [r, g, b] = fg;
-      }
-    } else if (!active && inPageBody) {
-      // Draw 3 horizontal lines
-      const lineY = [0.38, 0.52, 0.66];
-      const lineH = 0.07;
-      const lineX1 = 0.48, lineX2 = 0.88;
-      const onLine = lineY.some(ly => ny >= ly && ny <= ly + lineH) && nx >= lineX1 && nx <= lineX2;
-      if (onLine) [r, g, b] = fg;
-    }
-  } else if (inBack) {
-    [r, g, b] = bg;
-  } else {
-    // Transparent
-    r = g = b = 0; a = 0;
+const GRID = (() => {
+  const grid = Array.from({ length: 16 }, () => new Array(16).fill(null));
+  for (const [hex, runs] of BOWL) {
+    const rgb = hexToRGB(hex);
+    for (const [x, y, w] of runs) for (let i = 0; i < w; i++) grid[y][x + i] = rgb;
   }
+  return grid;
+})();
 
-  return [r ?? 0, g ?? 0, b ?? 0, a];
+// Active: the bowl in colour. Inactive: the same bowl in grey, slightly faded.
+// At 128px the art is 96px with 16px of transparent padding, as the Chrome Web Store asks.
+function drawIcon(x, y, size, active) {
+  const art = size === 128 ? 96 : size;
+  const pad = (size - art) / 2;
+  const scale = art / 16;
+  const gx = Math.floor((x - pad) / scale);
+  const gy = Math.floor((y - pad) / scale);
+  if (x < pad || y < pad || gx > 15 || gy > 15) return [0, 0, 0, 0];
+  const px = GRID[gy][gx];
+  if (!px) return [0, 0, 0, 0];
+  if (active) return [...px, 255];
+  const grey = Math.round(0.299 * px[0] + 0.587 * px[1] + 0.114 * px[2]);
+  return [grey, grey, grey, 170];
 }
 
 // ── Generate icons ────────────────────────────────────────────────────────────
@@ -154,7 +117,7 @@ const SIZES = [16, 32, 48, 128];
 for (const size of SIZES) {
   for (const active of [true, false]) {
     const state = active ? 'active' : 'inactive';
-    const png = encodePNG(size, size, (x, y, w, h) => drawIcon(x, y, w, h, active));
+    const png = encodePNG(size, size, (x, y, w) => drawIcon(x, y, w, active));
     const outPath = join(OUT, `${state}-${size}.png`);
     writeFileSync(outPath, png);
     console.log(`Written: ${state}-${size}.png (${png.length} bytes)`);
