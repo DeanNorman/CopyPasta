@@ -19,6 +19,17 @@ chrome.storage.onChanged.addListener(async (changes) => {
   }
 });
 
+// Re-sync when the user grants or revokes site access (including from Chrome's extension settings)
+chrome.permissions.onAdded.addListener(async () => {
+  await SitePolicy.syncRegistrations();
+  await updateActiveTabIcons();
+});
+
+chrome.permissions.onRemoved.addListener(async () => {
+  await SitePolicy.syncRegistrations();
+  await updateActiveTabIcons();
+});
+
 // Update icon when switching active tabs
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   try {

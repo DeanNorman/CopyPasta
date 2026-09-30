@@ -39,7 +39,7 @@ Because CopyPasta uses a zero-build architecture, creating the distribution ZIP 
 
 ```bash
 # From the repository root:
-zip -r copypasta-v2.0.0.zip \
+zip -r copypasta-v2.1.0.zip \
   manifest.json \
   background.js \
   site-policy.js \
@@ -58,7 +58,7 @@ zip -r copypasta-v2.0.0.zip \
 
 1. Navigate to the [Chrome Developer Dashboard](https://chrome.google.com/webstore/developer/dashboard).
 2. Select your extension item (or click **Add new item**).
-3. Under **Package**, upload `copypasta-v2.0.0.zip`.
+3. Under **Package**, upload `copypasta-v2.1.0.zip`.
 4. Review the automated validation results.
 5. Refer to [STORE_LISTING.md](STORE_LISTING.md) for pre-written store description copy, privacy policy URL, and permissions justifications.
 
@@ -72,6 +72,6 @@ zip -r copypasta-v2.0.0.zip \
 2. Click **Submit for Review**.
 3. Once approved, tag the release commit in Git:
    ```bash
-   git tag v2.0.0
-   git push origin v2.0.0
+   git tag v2.1.0
+   git push origin v2.1.0
    ```

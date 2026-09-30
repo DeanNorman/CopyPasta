@@ -39,15 +39,17 @@ Enables reading the active tab's URL (via `chrome.tabs.query`) to determine whet
 
 ---
 
-## 4. `host_permissions: <all_urls>`
+## 4. `optional_host_permissions: *://*/*` (requested one site at a time)
 
-**Browser Prompt:** *"Read and change all your data on all websites"*
+**At install:** no site access is requested, so Chrome shows no "all your data on all websites" prompt.
 
-**Technical Purpose:**
-Required by Chrome's `chrome.scripting` API to allow registering scripts against user-selected origins.
-- Chrome requires extensions to declare candidate host patterns before registering dynamic scripts on them.
-- `<all_urls>` allows users to enable clipboard restoration on any domain of their choice (e.g., their bank, company intranet, or password portal).
-- **Critical distinction:** Declaring `<all_urls>` in `host_permissions` does **not** inject any code globally. Code is only injected onto specific origins where the user has explicitly clicked "Enable".
+**At runtime:** when the user switches CopyPasta on for a site, the popup calls `chrome.permissions.request` for
+that site's match pattern only (for example `*://bank.example.com/*`, or `*://*.example.com/*` when the user
+chooses to cover subdomains). Chrome shows its own prompt, and the user can refuse.
+- Content scripts are registered only for rules the user has enabled **and** granted access to.
+- Removing a site calls `chrome.permissions.remove` for its patterns, giving the access back.
+- If the user revokes access in Chrome's settings, the background worker re-syncs and the popup shows "Needs access".
+- A rule synced from another browser does nothing on this one until the user grants access here.
 
 ---
 

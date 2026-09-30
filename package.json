@@ -1,6 +1,6 @@
 {
   "name": "copypasta",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Restores copy, cut, and paste on sites that block it. Opt-in, per-site. No telemetry. Zero build dependencies.",
   "private": true,
   "type": "module",

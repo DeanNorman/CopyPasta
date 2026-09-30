@@ -5,6 +5,15 @@ All notable changes to CopyPasta will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] — 2026-09-30
+
+### Changed
+- **Site access is optional and per site.** CopyPasta no longer asks for access to all websites at install. Switching it on for a site asks Chrome for access to that site only (or its subdomains, if you choose), and removing a site gives the access back.
+- Rules synced from another browser stay inactive on this one until you grant access, and the popup shows "Needs access".
+
+### Removed
+- Unused `web_accessible_resources` entry.
+
 ## [2.0.0] — 2026-09-29
 
 ### Added (2026-09-30, before the first Chrome Web Store submission)

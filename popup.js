@@ -1,6 +1,7 @@
 import { SitePolicy } from './site-policy.js';
 
 let currentTab = null;
+let currentStatus = null;
 let isDrawerOpen = false;
 
 // DOM Elements
@@ -34,6 +35,7 @@ async function init() {
   currentTab = await getActiveTab();
   const url = currentTab?.url;
   const status = await SitePolicy.getStatus(url);
+  currentStatus = status;
 
   if (!status.isWeb) {
     viewNoWeb.classList.remove('view-hidden');
@@ -56,6 +58,10 @@ function renderCurrentState(status) {
     statusBadge.className = 'badge badge-success';
     statusBadge.innerHTML = '<span class="badge-dot"></span>Active';
     statusDesc.textContent = 'Clipboard events restored';
+  } else if (status.needsAccess) {
+    statusBadge.className = 'badge badge-subtle';
+    statusBadge.textContent = 'Needs access';
+    statusDesc.textContent = 'Click to allow CopyPasta on this site';
   } else if (status.rule) {
     statusBadge.className = 'badge badge-subtle';
     statusBadge.textContent = 'Paused';
@@ -68,25 +74,44 @@ function renderCurrentState(status) {
 }
 
 async function handleSiteToggle() {
-  if (!currentTab?.url) return;
+  if (!currentTab?.url || !currentStatus) return;
+  const status = currentStatus;
+
+  // Switching on asks Chrome for access to this one site. The request has to happen first,
+  // inside the click, or Chrome will not show the prompt.
+  const pattern = status.isProtected ? null : SitePolicy.accessPattern(currentTab.url, status.rule);
+  const access = pattern ? SitePolicy.requestAccess(pattern) : Promise.resolve(true);
   siteToggle.disabled = true;
 
   try {
-    const isNew = !(await SitePolicy.getStatus(currentTab.url)).rule;
-    await SitePolicy.toggle(currentTab.url);
+    if (!(await access)) return;
 
-    if (isNew && currentTab.id) {
+    if (status.needsAccess) {
+      // Rule already on (for example synced from another browser): access was the only thing missing
+      await SitePolicy.syncRegistrations();
+    } else {
+      await SitePolicy.toggle(currentTab.url);
+    }
+
+    if (!status.isProtected && currentTab.id) {
       await SitePolicy.inject(currentTab.id);
       reloadHint.classList.remove('view-hidden');
     }
 
-    const updated = await SitePolicy.getStatus(currentTab.url);
-    renderCurrentState(updated);
+    currentStatus = await SitePolicy.getStatus(currentTab.url);
+    renderCurrentState(currentStatus);
     await renderDrawerList();
   } catch (err) {
     console.error('[CopyPasta] Error toggling site:', err);
   } finally {
     siteToggle.disabled = false;
+  }
+}
+
+async function refreshCurrent() {
+  if (currentTab?.url) {
+    currentStatus = await SitePolicy.getStatus(currentTab.url);
+    renderCurrentState(currentStatus);
   }
 }
 
@@ -126,10 +151,13 @@ async function renderDrawerList() {
     subBtn.title = rule.matchSubdomains ? 'Matching subdomains enabled' : 'Match subdomains (*.domain)';
     subBtn.textContent = rule.matchSubdomains ? '*.sub' : 'exact';
     subBtn.addEventListener('click', async () => {
-      await SitePolicy.toggleSubdomains(rule.origin);
-      if (currentTab?.url) {
-        renderCurrentState(await SitePolicy.getStatus(currentTab.url));
+      // Covering subdomains needs access to them too; ask inside the click
+      if (!rule.matchSubdomains) {
+        const granted = await SitePolicy.requestAccess(SitePolicy.accessPattern(rule.origin, { ...rule, matchSubdomains: true }));
+        if (!granted) return;
       }
+      await SitePolicy.toggleSubdomains(rule.origin);
+      await refreshCurrent();
       await renderDrawerList();
     });
 
@@ -144,9 +172,7 @@ async function renderDrawerList() {
     `;
     delBtn.addEventListener('click', async () => {
       await SitePolicy.remove(rule.origin);
-      if (currentTab?.url) {
-        renderCurrentState(await SitePolicy.getStatus(currentTab.url));
-      }
+      await refreshCurrent();
       await renderDrawerList();
     });
 

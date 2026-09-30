@@ -190,4 +190,58 @@ describe('SitePolicy Operations with Chrome Mock', () => {
     assert.equal((await SitePolicy.list()).length, 0);
     assert.equal(registeredScripts.length, 0);
   });
+
+  describe('optional site access', () => {
+    let granted;
+
+    beforeEach(() => {
+      granted = new Set();
+      globalThis.chrome.permissions = {
+        contains: async ({ origins }) => origins.every((o) => granted.has(o)),
+        request: async ({ origins }) => {
+          origins.forEach((o) => granted.add(o));
+          return true;
+        },
+        remove: async ({ origins }) => {
+          origins.forEach((o) => granted.delete(o));
+          return true;
+        },
+      };
+    });
+
+    test('an enabled rule without access is not registered and reports needsAccess', async () => {
+      await SitePolicy.toggle('https://bank.example.com');
+      assert.equal(registeredScripts.length, 0);
+
+      const status = await SitePolicy.getStatus('https://bank.example.com/login');
+      assert.equal(status.isProtected, false);
+      assert.equal(status.needsAccess, true);
+    });
+
+    test('granting access registers the script and protects the site', async () => {
+      const pattern = SitePolicy.accessPattern('https://bank.example.com/login', null);
+      assert.equal(pattern, '*://bank.example.com/*');
+      assert.equal(await SitePolicy.requestAccess(pattern), true);
+
+      await SitePolicy.toggle('https://bank.example.com');
+      assert.equal(registeredScripts.length, 1);
+      const status = await SitePolicy.getStatus('https://bank.example.com/login');
+      assert.equal(status.isProtected, true);
+      assert.equal(status.needsAccess, false);
+    });
+
+    test('remove() gives the site access back', async () => {
+      await SitePolicy.requestAccess('*://bank.example.com/*');
+      await SitePolicy.toggle('https://bank.example.com');
+      await SitePolicy.remove('https://bank.example.com');
+      assert.equal(granted.size, 0);
+      assert.equal(registeredScripts.length, 0);
+    });
+
+    test('a denied request leaves nothing registered', async () => {
+      globalThis.chrome.permissions.request = async () => false;
+      assert.equal(await SitePolicy.requestAccess('*://bank.example.com/*'), false);
+      assert.equal(registeredScripts.length, 0);
+    });
+  });
 });

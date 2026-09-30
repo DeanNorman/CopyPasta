@@ -96,6 +96,22 @@ export function matchesUrl(rule, url) {
 }
 
 /**
+ * Checks whether the user has granted CopyPasta access to a match pattern.
+ * Site access is optional: it is requested per site when the user switches CopyPasta on,
+ * never at install. Where the permissions API is unavailable (tests), access is assumed.
+ * @param {string} pattern
+ * @returns {Promise<boolean>}
+ */
+export async function hasSiteAccess(pattern) {
+  if (typeof chrome === 'undefined' || !chrome.permissions?.contains) return true;
+  try {
+    return await chrome.permissions.contains({ origins: [pattern] });
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Loads rules from storage, supporting sync with local fallback and legacy migration
  * @returns {Promise<SiteRule[]>}
  */
@@ -164,6 +180,29 @@ async function saveStoredRules(rules) {
  */
 export const SitePolicy = {
   /**
+   * The match pattern a site needs access to: the rule's own pattern if one exists, else the exact origin.
+   * @param {string} url
+   * @param {SiteRule | null} [rule]
+   * @returns {string | null}
+   */
+  accessPattern(url, rule) {
+    if (rule) return originToPattern(rule.origin, rule.matchSubdomains);
+    const origin = normalizeOrigin(url);
+    return origin ? originToPattern(origin, false) : null;
+  },
+
+  /**
+   * Asks the user for access to one site. Must be called straight from a click handler,
+   * before any other await, so Chrome sees the user gesture.
+   * @param {string} pattern
+   * @returns {Promise<boolean>}
+   */
+  requestAccess(pattern) {
+    if (typeof chrome === 'undefined' || !chrome.permissions?.request) return Promise.resolve(true);
+    return chrome.permissions.request({ origins: [pattern] }).catch(() => false);
+  },
+
+  /**
    * Retrieves all saved rules
    * @returns {Promise<SiteRule[]>}
    */
@@ -174,7 +213,7 @@ export const SitePolicy = {
   /**
    * Evaluates the protection status of a given URL
    * @param {string | null | undefined} url
-   * @returns {Promise<{ isWeb: boolean, origin: string | null, hostname: string | null, rule: SiteRule | null, isProtected: boolean }>}
+   * @returns {Promise<{ isWeb: boolean, origin: string | null, hostname: string | null, rule: SiteRule | null, isProtected: boolean, needsAccess?: boolean }>}
    */
   async getStatus(url) {
     if (!url) {
@@ -192,13 +231,15 @@ export const SitePolicy = {
       const hostname = parsed.hostname;
       const rules = await loadStoredRules();
       const rule = rules.find((r) => matchesUrl(r, url)) ?? null;
+      const hasAccess = rule ? await hasSiteAccess(originToPattern(rule.origin, rule.matchSubdomains)) : false;
 
       return {
         isWeb: true,
         origin,
         hostname,
         rule,
-        isProtected: !!rule?.enabled,
+        isProtected: !!rule?.enabled && hasAccess,
+        needsAccess: !!rule?.enabled && !hasAccess,
       };
     } catch {
       return { isWeb: false, origin: null, hostname: null, rule: null, isProtected: false };
@@ -253,6 +294,12 @@ export const SitePolicy = {
     const filtered = rules.filter((r) => r.origin !== origin);
     await saveStoredRules(filtered);
     await this.syncRegistrations(filtered);
+
+    // Give back the site access this rule used
+    if (typeof chrome !== 'undefined' && chrome.permissions?.remove) {
+      const origins = [originToPattern(origin, false), originToPattern(origin, true)];
+      await chrome.permissions.remove({ origins }).catch(() => {});
+    }
   },
 
   /**
@@ -282,7 +329,11 @@ export const SitePolicy = {
     }
 
     const allRules = rules || (await loadStoredRules());
-    const enabledRules = allRules.filter((r) => r.enabled);
+    const enabledRules = [];
+    for (const r of allRules) {
+      // A rule synced from another browser has no access here until the user grants it
+      if (r.enabled && (await hasSiteAccess(originToPattern(r.origin, r.matchSubdomains)))) enabledRules.push(r);
+    }
 
     try {
       const existing = await chrome.scripting.getRegisteredContentScripts();
