@@ -114,6 +114,7 @@ Read more in [Architecture Documentation](docs/ARCHITECTURE.md).
 - [Publishing to Chrome Web Store](docs/PUBLISHING.md)
 - [Web Store Listing & Assets](docs/STORE_LISTING.md)
 - [Changelog](CHANGELOG.md)
+- [Privacy Policy](PRIVACY.md)
 - [Security Policy](SECURITY.md)
 - [Contributing Guidelines](CONTRIBUTING.md)
 
