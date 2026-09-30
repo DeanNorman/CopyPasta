@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CopyPasta</title>
+<meta name="description" content="CopyPasta restores copy, cut and paste on websites that deliberately disable clipboard events. Open source, opt-in per site, zero telemetry.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg class="sprites" aria-hidden="true">
+  <!-- 16x16 pixel bowl: logo, toolbar row and "Under the lid" badge -->
+  <symbol id="px-bowl" viewBox="0 0 16 16">
+    <path fill="#FFF6E6" d="M2 8h12v1h-12zM2 9h2v1h-2zM5 9h6v1h-6zM12 9h2v1h-2zM2 10h1v1h-1zM4 10h3v1h-3zM9 10h3v1h-3zM13 10h1v1h-1zM3 11h10v1h-10zM4 12h8v1h-8z"/>
+    <path fill="#FFCF5C" d="M6 4h1v1h-1zM9 4h1v1h-1zM4 5h8v1h-8zM3 6h10v1h-10z"/>
+    <path fill="#E8553D" d="M7 3h2v1h-2zM7 4h2v1h-2zM2 7h12v1h-12z"/>
+    <path fill="#FF8FA3" d="M3 10h1v1h-1zM12 10h1v1h-1z"/>
+    <path fill="#5FA35A" d="M7 2h2v1h-2z"/>
+    <path fill="#120E14" d="M6 3h1v1h-1zM9 3h1v1h-1zM4 4h2v1h-2zM10 4h2v1h-2zM3 5h1v1h-1zM12 5h1v1h-1zM2 6h1v1h-1zM13 6h1v1h-1zM1 7h1v1h-1zM14 7h1v1h-1zM1 8h1v1h-1zM14 8h1v1h-1zM1 9h1v1h-1zM4 9h1v1h-1zM11 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM7 10h2v1h-2zM14 10h1v1h-1zM2 11h1v1h-1zM13 11h1v1h-1zM3 12h1v1h-1zM12 12h1v1h-1zM4 13h8v1h-8zM6 14h4v1h-4z"/>
+  </symbol>
+
+  <!-- Simplified bowl for the call to action -->
+  <symbol id="bowl-icon" viewBox="0 0 100 100">
+    <circle cx="31" cy="54" r="18" fill="#2B2330"/><circle cx="50" cy="44" r="20" fill="#2B2330"/><circle cx="69" cy="54" r="18" fill="#2B2330"/>
+    <circle cx="31" cy="54" r="13.5" fill="#FFCF5C"/><circle cx="50" cy="44" r="15.5" fill="#FFCF5C"/><circle cx="69" cy="54" r="13.5" fill="#FFCF5C"/>
+    <circle cx="50" cy="29" r="7.5" fill="#E8553D" stroke="#2B2330" stroke-width="4"/>
+    <path d="M10 58 H90 C90 82 72 95 50 95 C28 95 10 82 10 58 Z" fill="#FFF6E6" stroke="#2B2330" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="6" y="53" width="88" height="11" rx="5.5" fill="#E8553D" stroke="#2B2330" stroke-width="5"/>
+    <ellipse cx="27" cy="82" rx="6" ry="3.5" fill="#FF8FA3"/><ellipse cx="73" cy="82" rx="6" ry="3.5" fill="#FF8FA3"/>
+    <ellipse cx="37" cy="76" rx="4.2" ry="5.2" fill="#2B2330"/><ellipse cx="63" cy="76" rx="4.2" ry="5.2" fill="#2B2330"/>
+    <path d="M46 81 Q48 84 50 81 Q52 84 54 81" fill="none" stroke="#2B2330" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<div class="page">
+
+<header class="site-header wrap">
+  <a class="brand" href="#">
+    <svg class="px" width="32" height="32" aria-hidden="true"><use href="#px-bowl"/></svg>
+    <span class="wordmark">copy<span class="accent">pasta</span></span>
+  </a>
+  <nav class="nav">
+    <a href="#how">How it works</a>
+    <a href="#under">Under the lid</a>
+    <a href="https://github.com/DeanNorman/CopyPasta">GitHub</a>
+  </nav>
+</header>
+
+<section class="hero wrap">
+  <div class="hero-copy">
+    <div class="pill">open source browser extension</div>
+    <h1>Paste freely.<br><span class="accent">Your data stays yours.</span></h1>
+    <p class="lede">CopyPasta restores copy, cut and paste on websites that deliberately disable clipboard events. Switch it on for the sites that need it and leave the rest alone.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="https://github.com/DeanNorman/CopyPasta#quick-start-load-from-source">Install from GitHub</a><!-- Swap for the Chrome Web Store URL once the listing is live -->
+      <a class="btn btn-secondary" href="https://github.com/DeanNorman/CopyPasta">Read the source</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <div class="mascot-disc">
+      <!-- Hero mascot. The raised arm and its sheet of paper are grouped in .wave -->
+      <svg class="mascot" viewBox="0 0 200 200" role="img" aria-label="A smiling bowl of spaghetti waving a sheet of paper">
+        <ellipse cx="100" cy="190" rx="58" ry="6" fill="#2B2330" opacity=".12"/>
+        <g class="wave">
+          <g transform="rotate(-8 150 30)">
+            <rect x="132" y="8" width="36" height="44" rx="4" fill="#FFF6E6" stroke="#2B2330" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M140 20 H160 M140 29 H160 M140 38 H152" fill="none" stroke="#2B2330" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <path d="M140 98 C162 92 160 70 150 50" fill="none" stroke="#2B2330" stroke-width="13" stroke-linecap="round"/>
+          <path d="M140 98 C162 92 160 70 150 50" fill="none" stroke="#FFCF5C" stroke-width="6" stroke-linecap="round"/>
+        </g>
+        <circle cx="64" cy="104" r="34" fill="#2B2330"/><circle cx="90" cy="84" r="36" fill="#2B2330"/><circle cx="120" cy="86" r="34" fill="#2B2330"/><circle cx="142" cy="106" r="30" fill="#2B2330"/><circle cx="100" cy="104" r="36" fill="#2B2330"/>
+        <circle cx="64" cy="104" r="30" fill="#FFCF5C"/><circle cx="90" cy="84" r="32" fill="#FFCF5C"/><circle cx="120" cy="86" r="30" fill="#FFCF5C"/><circle cx="142" cy="106" r="26" fill="#FFCF5C"/><circle cx="100" cy="104" r="32" fill="#FFCF5C"/>
+        <path d="M60 96 q6 -8 12 0 M110 76 q6 -8 12 0 M128 98 q5 -7 10 0 M84 92 q5 -7 10 0" fill="none" stroke="#E9A93A" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M82 64 C82 52 94 48 102 50 C114 48 122 56 118 66 C114 72 106 68 100 70 C92 72 82 72 82 64 Z" fill="#E8553D" stroke="#2B2330" stroke-width="4" stroke-linejoin="round"/>
+        <ellipse cx="106" cy="47" rx="8" ry="4.5" transform="rotate(-30 106 47)" fill="#5FA35A" stroke="#2B2330" stroke-width="3"/>
+        <ellipse cx="94" cy="47" rx="7" ry="4" transform="rotate(30 94 47)" fill="#5FA35A" stroke="#2B2330" stroke-width="3"/>
+        <rect x="78" y="176" width="44" height="10" rx="5" fill="#2B2330"/>
+        <path d="M26 112 H174 C174 160 142 184 100 184 C58 184 26 160 26 112 Z" fill="#FFF6E6" stroke="#2B2330" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="22" y="106" width="156" height="15" rx="7.5" fill="#E8553D" stroke="#2B2330" stroke-width="4"/>
+        <ellipse cx="62" cy="156" rx="9" ry="5" fill="#FF8FA3"/><ellipse cx="138" cy="156" rx="9" ry="5" fill="#FF8FA3"/>
+        <ellipse cx="78" cy="144" rx="6" ry="7.5" fill="#2B2330"/><ellipse cx="122" cy="144" rx="6" ry="7.5" fill="#2B2330"/>
+        <circle cx="80" cy="141" r="2.2" fill="#FFF6E6"/><circle cx="124" cy="141" r="2.2" fill="#FFF6E6"/>
+        <path d="M93 153 Q96.5 158 100 153 Q103.5 158 107 153" fill="none" stroke="#2B2330" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="sticker">ctrl+v <span class="ok">✓</span></div>
+    </div>
+  </div>
+</section>
+
+<svg class="squiggle" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 C100 0 200 40 300 20 S500 0 600 20 S800 40 900 20 S1100 0 1200 20" fill="none" stroke="#FFCF5C" stroke-width="8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+
+<section id="how" class="how wrap">
+  <h2>How it works</h2>
+  <p class="section-lede">Nothing runs until you ask it to. CopyPasta is off everywhere by default.</p>
+  <div class="steps">
+    <div class="card">
+      <div class="step-num">1</div>
+      <div class="card-title">A site blocks your paste</div>
+      <div class="card-body">A form field won't take your pasted password, or a page stops you copying its text.</div>
+    </div>
+    <div class="card">
+      <div class="step-num">2</div>
+      <div class="card-title">Turn it on for that site</div>
+      <div class="card-body">Click CopyPasta in your toolbar and switch it on for the current site only.</div>
+      <div class="toolbar-row">
+        <svg class="px" width="16" height="16" aria-hidden="true"><use href="#px-bowl"/></svg>
+        <span class="site">docs.example.com</span>
+        <button class="switch" type="button" aria-label="Toggle for this site" aria-pressed="true"><span class="knob"></span></button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="step-num">3</div>
+      <div class="card-title">Copy, cut and paste again</div>
+      <div class="card-body">Copy, cut and paste work normally on that site again. If they don't straight away, reload the page. Turn it off whenever you like.</div>
+    </div>
+  </div>
+</section>
+
+<section id="under" class="under">
+  <div class="under-inner wrap">
+    <div class="under-copy">
+      <svg class="px" width="96" height="96" aria-hidden="true"><use href="#px-bowl"/></svg>
+      <h2>Cute on the outside.<br><span class="accent-yel">Very simple underneath.</span></h2>
+      <p>CopyPasta doesn't collect or send anything, and never reads your clipboard. The only thing it keeps is your list of sites. The code is small enough to read in one sitting.</p>
+      <a class="mono-link" href="https://github.com/DeanNorman/CopyPasta">read the source →</a>
+    </div>
+    <div class="terminal">
+      <div class="prompt">$ copypasta --what</div>
+      <div class="facts">
+        <span>restores</span><span>copy · cut · paste</span>
+        <span>scope</span><span>opt-in, per site</span>
+        <span>telemetry</span><span class="good">none</span>
+        <span>network</span><span class="good">0 requests</span>
+        <span>deps</span><span class="good">0 runtime</span>
+        <span>platform</span><span>manifest v3</span>
+        <span>license</span><span>MIT</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta wrap">
+  <svg width="150" height="150" aria-hidden="true"><use href="#bowl-icon"/></svg>
+  <div class="cta-copy">
+    <h2>Keep a bowl in your toolbar.</h2>
+    <div class="actions">
+      <a class="btn btn-primary" href="https://github.com/DeanNorman/CopyPasta#quick-start-load-from-source">Install from GitHub</a><!-- Swap for the Chrome Web Store URL once the listing is live -->
+      <a class="btn btn-secondary" href="https://github.com/DeanNorman/CopyPasta">Star on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner wrap">
+    <span class="wordmark wordmark-sm">copy<span class="accent-dark">pasta</span></span>
+    <span>open source · manifest v3 · zero telemetry</span>
+    <a class="footer-link" href="https://github.com/DeanNorman/CopyPasta/blob/main/PRIVACY.md">privacy</a>
+    <a class="footer-link" href="https://github.com/DeanNorman/CopyPasta">github</a>
+  </div>
+</footer>
+
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
