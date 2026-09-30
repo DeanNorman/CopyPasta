@@ -7,6 +7,8 @@
 
 > **Paste freely. Your data stays yours.**
 
+**[deannorman.github.io/CopyPasta](https://deannorman.github.io/CopyPasta/)** · Chrome Web Store: coming soon
+
 A modern Chromium browser extension that restores `copy`, `cut`, and `paste` on websites that deliberately disable or intercept clipboard events — banking portals, HR systems, healthcare forms, password fields, and more.
 
 **Zero telemetry. Zero network requests. Zero build dependencies. Opt-in, per-site.**
