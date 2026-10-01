@@ -2,6 +2,8 @@
 
 This guide details the procedure for packaging and publishing new versions of CopyPasta to the Chrome Web Store (CWS).
 
+**Published item**: `npajkmmfacjbillmmbciijmebjhiokke` — [listing](https://chromewebstore.google.com/detail/copypasta/npajkmmfacjbillmmbciijmebjhiokke). Updates go to this existing item; never create a second one.
+
 ---
 
 ## 1. Prerequisites
@@ -57,7 +59,7 @@ zip -r copypasta-v2.1.0.zip \
 ## 4. Upload to Developer Dashboard
 
 1. Navigate to the [Chrome Developer Dashboard](https://chrome.google.com/webstore/developer/dashboard).
-2. Select your extension item (or click **Add new item**).
+2. Select the existing **CopyPasta** item (`npajkmmfacjbillmmbciijmebjhiokke`).
 3. Under **Package**, upload `copypasta-v2.1.0.zip`.
 4. Review the automated validation results.
 5. Refer to [STORE_LISTING.md](STORE_LISTING.md) for pre-written store description copy, privacy policy URL, and permissions justifications.

@@ -1,5 +1,6 @@
 # CopyPasta
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/npajkmmfacjbillmmbciijmebjhiokke?label=chrome%20web%20store)](https://chromewebstore.google.com/detail/copypasta/npajkmmfacjbillmmbciijmebjhiokke)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-node%20--test-success.svg)](tests/)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
@@ -7,7 +8,7 @@
 
 > **Paste freely. Your data stays yours.**
 
-**[deannorman.github.io/CopyPasta](https://deannorman.github.io/CopyPasta/)** · Chrome Web Store: coming soon
+**[Add to Chrome](https://chromewebstore.google.com/detail/copypasta/npajkmmfacjbillmmbciijmebjhiokke)** · [deannorman.github.io/CopyPasta](https://deannorman.github.io/CopyPasta/)
 
 A modern Chromium browser extension that restores `copy`, `cut`, and `paste` on websites that deliberately disable or intercept clipboard events — banking portals, HR systems, healthcare forms, password fields, and more.
 
@@ -48,6 +49,14 @@ function forceBrowserDefault(e) {
 Because it captures the event before the host page's scripts can receive it, the page's `preventDefault()` blocking logic never executes. The browser's default clipboard action proceeds unimpeded.
 
 **Privacy Guarantee:** CopyPasta is completely inert on any website you have not explicitly enabled. No content scripts run globally.
+
+---
+
+## Install
+
+**[Add to Chrome — Chrome Web Store](https://chromewebstore.google.com/detail/copypasta/npajkmmfacjbillmmbciijmebjhiokke)**
+
+Works in any Chromium browser that can install from the Chrome Web Store (Chrome, Edge, Brave, Arc, Vivaldi, Opera). CopyPasta asks for access to a site only when you switch it on for that site.
 
 ---
 
@@ -117,6 +126,7 @@ Read more in [Architecture Documentation](docs/ARCHITECTURE.md).
 - [Web Store Listing & Assets](docs/STORE_LISTING.md)
 - [Changelog](CHANGELOG.md)
 - [Website](https://deannorman.github.io/CopyPasta/)
+- [Chrome Web Store listing](https://chromewebstore.google.com/detail/copypasta/npajkmmfacjbillmmbciijmebjhiokke)
 - [Privacy Policy](PRIVACY.md)
 - [Security Policy](SECURITY.md)
 - [Contributing Guidelines](CONTRIBUTING.md)

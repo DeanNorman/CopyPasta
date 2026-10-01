@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0] — 2026-09-30
 
+Published on the Chrome Web Store on 2026-10-01 as item `npajkmmfacjbillmmbciijmebjhiokke`: https://chromewebstore.google.com/detail/copypasta/npajkmmfacjbillmmbciijmebjhiokke
+
 ### Changed
 - **Site access is optional and per site.** CopyPasta no longer asks for access to all websites at install. Switching it on for a site asks Chrome for access to that site only (or its subdomains, if you choose), and removing a site gives the access back.
 - Rules synced from another browser stay inactive on this one until you grant access, and the popup shows "Needs access".
