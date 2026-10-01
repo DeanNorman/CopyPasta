@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CopyPasta — store screenshot</title>
+<style>
+@font-face { font-family: 'M PLUS Rounded 1c'; font-weight: 500; src: url(../../site/fonts/m-plus-rounded-1c-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: 'M PLUS Rounded 1c'; font-weight: 800; src: url(../../site/fonts/m-plus-rounded-1c-latin-800-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 400; src: url(../../site/fonts/jetbrains-mono-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 600; src: url(../../site/fonts/jetbrains-mono-latin-600-normal.woff2) format('woff2'); }
+
+:root {
+  --cream: #FFF6E6;
+  --ink: #2B2330;
+  --ink-soft: #4a4048;
+  --muted: #7a6d78;
+  --yellow: #FFCF5C;
+  --tomato: #E8553D;
+  --tomato-dark: #C73C28;
+  --basil: #5FA35A;
+  --night: #231D27;
+  --night-text: #d9cfd6;
+  --rounded: 'M PLUS Rounded 1c', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1280px; height: 800px; overflow: hidden; }
+body { background: var(--cream); color: var(--ink); font-family: var(--rounded); }
+
+.shot { position: relative; width: 1280px; height: 800px; overflow: hidden; }
+
+/* Background: the site's squiggle, kept well below the UI */
+.squiggle { position: absolute; left: 0; bottom: 0; width: 1280px; height: 46px; }
+
+/* Copy column */
+.copy { position: absolute; left: 64px; top: 72px; width: 376px; }
+.pill {
+  display: inline-block;
+  font: 400 12px var(--mono);
+  color: var(--muted);
+  border: 1px dashed rgba(43, 35, 48, .3);
+  border-radius: 999px;
+  padding: 6px 12px;
+  margin-bottom: 20px;
+}
+h1 { font: 800 44px/1.08 var(--rounded); letter-spacing: -.035em; }
+h1 .accent { color: var(--tomato); }
+.sub { margin-top: 18px; font: 500 17px/1.55 var(--rounded); color: var(--ink-soft); }
+
+/* Mascot. Big, but always parked in empty space beside the UI it is pointing at. */
+.mascot-disc {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mascot-disc svg { width: 86%; height: 86%; overflow: visible; }
+.sticker {
+  position: absolute;
+  font: 600 15px var(--mono);
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 7px 12px;
+  box-shadow: 0 4px 0 var(--ink);
+  transform: rotate(-4deg);
+  white-space: nowrap;
+}
+.sticker .ok { color: var(--basil); }
+
+/* Browser window mock */
+.win {
+  position: absolute;
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 10px 12px 0 rgba(43, 35, 48, .16);
+  overflow: hidden;
+}
+.bar {
+  height: 50px;
+  background: #f4eee3;
+  border-bottom: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+}
+.dots i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: var(--ink); opacity: .22; margin-right: 6px; }
+.url {
+  flex: 1;
+  height: 30px;
+  background: #fff;
+  border: 2px solid rgba(43, 35, 48, .18);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font: 400 13px var(--mono);
+  color: #5c5260;
+}
+.ext {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 3px solid var(--tomato);
+  display: flex; align-items: center; justify-content: center;
+}
+.ext img { width: 22px; height: 22px; image-rendering: pixelated; }
+
+/* The host page inside the window: plain and neutral, so it reads as "someone else's site" */
+.page { font-family: var(--ui); padding: 40px; }
+.page .logo { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 600; color: #1e3a8a; margin-bottom: 26px; }
+.page .logo span { width: 22px; height: 22px; border-radius: 6px; background: #1e3a8a; }
+.page h2 { font-size: 23px; color: #0f172a; margin-bottom: 4px; }
+.page .lede { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+.field { width: 300px; margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; color: #475569; margin-bottom: 6px; }
+.field .input {
+  height: 42px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #0f172a;
+}
+.field .input.focus { border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30, 58, 138, .12); }
+.field .input .pw { letter-spacing: .22em; }
+.chip {
+  font-family: var(--rounded);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--basil);
+  background: rgba(95, 163, 90, .14);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.signin { width: 300px; height: 44px; border-radius: 8px; background: #1e3a8a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+.blocked { width: 300px; margin-top: 18px; font-size: 12px; color: #7c8794; }
+.blocked s { color: #a3adb9; }
+
+/* The real popup, rendered from the extension's own HTML/CSS */
+.pop {
+  position: absolute;
+  transform-origin: top right;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px rgba(43, 35, 48, .38);
+  background: #0f172a;
+  line-height: 0;
+}
+.pop iframe { width: 320px; height: 300px; border: 0; display: block; }
+
+/* Frame 3: a toolbar strip, so the popup still reads as the toolbar popup */
+.minibar {
+  position: absolute;
+  height: 52px;
+  background: #f4eee3;
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 14px;
+}
+
+/* Frame 3: privacy facts */
+.facts {
+  position: absolute;
+  background: var(--night);
+  color: var(--night-text);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 8px 10px 0 rgba(43, 35, 48, .16);
+  padding: 22px 24px;
+  font: 400 14px/1.9 var(--mono);
+}
+.facts .prompt { color: var(--yellow); margin-bottom: 10px; }
+.facts table { border-collapse: collapse; }
+.facts td { padding-right: 26px; white-space: nowrap; }
+.facts td.val { color: #fff; }
+.facts td.good { color: #8ed08a; }
+</style>
+</head>
+<body>
+<div class="shot" id="shot"></div>
+
+<script>
+const MASCOT = `
+<svg viewBox="0 0 200 200" role="img" aria-label="A smiling bowl of spaghetti waving a sheet of paper">
+  <g>
+    <g transform="rotate(-8 150 30)">
+      <rect x="132" y="8" width="36" height="44" rx="4" fill="#FFF6E6" stroke="#2B2330" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M140 20 H160 M140 29 H160 M140 38 H152" fill="none" stroke="#2B2330" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <path d="M140 98 C162 92 160 70 150 50" fill="none" stroke="#2B2330" stroke-width="13" stroke-linecap="round"/>
+    <path d="M140 98 C162 92 160 70 150 50" fill="none" stroke="#FFCF5C" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <circle cx="64" cy="104" r="34" fill="#2B2330"/><circle cx="90" cy="84" r="36" fill="#2B2330"/><circle cx="120" cy="86" r="34" fill="#2B2330"/><circle cx="142" cy="106" r="30" fill="#2B2330"/><circle cx="100" cy="104" r="36" fill="#2B2330"/>
+  <circle cx="64" cy="104" r="30" fill="#FFCF5C"/><circle cx="90" cy="84" r="32" fill="#FFCF5C"/><circle cx="120" cy="86" r="30" fill="#FFCF5C"/><circle cx="142" cy="106" r="26" fill="#FFCF5C"/><circle cx="100" cy="104" r="32" fill="#FFCF5C"/>
+  <path d="M60 96 q6 -8 12 0 M110 76 q6 -8 12 0 M128 98 q5 -7 10 0 M84 92 q5 -7 10 0" fill="none" stroke="#E9A93A" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M82 64 C82 52 94 48 102 50 C114 48 122 56 118 66 C114 72 106 68 100 70 C92 72 82 72 82 64 Z" fill="#E8553D" stroke="#2B2330" stroke-width="4" stroke-linejoin="round"/>
+  <ellipse cx="106" cy="47" rx="8" ry="4.5" transform="rotate(-30 106 47)" fill="#5FA35A" stroke="#2B2330" stroke-width="3"/>
+  <ellipse cx="94" cy="47" rx="7" ry="4" transform="rotate(30 94 47)" fill="#5FA35A" stroke="#2B2330" stroke-width="3"/>
+  <rect x="78" y="176" width="44" height="10" rx="5" fill="#2B2330"/>
+  <path d="M26 112 H174 C174 160 142 184 100 184 C58 184 26 160 26 112 Z" fill="#FFF6E6" stroke="#2B2330" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="22" y="106" width="156" height="15" rx="7.5" fill="#E8553D" stroke="#2B2330" stroke-width="4"/>
+  <ellipse cx="62" cy="156" rx="9" ry="5" fill="#FF8FA3"/><ellipse cx="138" cy="156" rx="9" ry="5" fill="#FF8FA3"/>
+  <ellipse cx="78" cy="144" rx="6" ry="7.5" fill="#2B2330"/><ellipse cx="122" cy="144" rx="6" ry="7.5" fill="#2B2330"/>
+  <circle cx="80" cy="141" r="2.2" fill="#FFF6E6"/><circle cx="124" cy="141" r="2.2" fill="#FFF6E6"/>
+  <path d="M93 153 Q96.5 158 100 153 Q103.5 158 107 153" fill="none" stroke="#2B2330" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
+const SQUIGGLE = `
+<svg class="squiggle" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 20 C100 0 200 40 300 20 S500 0 600 20 S800 40 900 20 S1100 0 1200 20" fill="none" stroke="#FFCF5C" stroke-width="9" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+</svg>`;
+
+// The host page the popup sits over. Neutral on purpose: the brand lives in the frame, not here.
+const loginPage = (pasted) => `
+<div class="page">
+  <div class="logo"><span></span>Example Bank</div>
+  <h2>Sign in</h2>
+  <div class="lede">Online banking</div>
+  <div class="field"><label>Username</label><div class="input">dean.example</div></div>
+  <div class="field">
+    <label>Password</label>
+    <div class="input focus"><span class="pw">${'•'.repeat(12)}</span>${pasted ? '<span class="chip">pasted</span>' : ''}</div>
+  </div>
+  <div class="signin">Sign in</div>
+  <div class="blocked"><s>Pasting is disabled in this field.</s></div>
+</div>`;
+
+const browserWindow = ({ x, y, w, h, url, frame, popScale, popTop }) => `
+<div class="win" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px">
+  <div class="bar">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="url">${url}</span>
+    <span class="ext"><img src="../../icons/active-48.png" alt=""></span>
+  </div>
+  ${loginPage(true)}
+  <div class="pop" style="top:${popTop}px;right:14px;transform:scale(${popScale})">
+    <iframe data-frame="${frame}"></iframe>
+  </div>
+</div>`;
+
+const mascot = ({ x, y, size }) => `
+<div class="mascot-disc" style="left:${x}px;top:${y}px;width:${size}px;height:${size}px">${MASCOT}</div>`;
+
+const FRAMES = {
+  1: () => `
+    ${SQUIGGLE}
+    <div class="copy">
+      <div class="pill">one click, one site</div>
+      <h1>Paste your password <span class="accent">again.</span></h1>
+      <div class="sub">Some sites block paste to force you to retype. Switch CopyPasta on for that site and your password manager works like it should.</div>
+    </div>
+    ${mascot({ x: 52, y: 408, size: 330 })}
+    <div class="sticker" style="left:44px;top:364px">ctrl+v <span class="ok">&#10003;</span></div>
+    ${browserWindow({ x: 440, y: 98, w: 800, h: 604, url: 'secure.examplebank.com/login', frame: 1, popScale: 1.38, popTop: 58 })}
+  `,
+  2: () => `
+    ${SQUIGGLE}
+    <div class="copy" style="width:356px">
+      <div class="pill">your sites, your rules</div>
+      <h1 style="font-size:41px">Every site you added, <span class="accent">in one list.</span></h1>
+      <div class="sub">Cover one site or all of its subdomains, pause it, or remove it — straight from the toolbar popup.</div>
+    </div>
+    ${mascot({ x: 52, y: 420, size: 318 })}
+    ${browserWindow({ x: 440, y: 98, w: 800, h: 604, url: 'secure.examplebank.com/login', frame: 2, popScale: 1.38, popTop: 58 })}
+  `,
+  3: () => `
+    ${SQUIGGLE}
+    <div class="copy" style="width:430px">
+      <div class="pill">off until you say otherwise</div>
+      <h1>Does nothing <span class="accent">everywhere else.</span></h1>
+      <div class="sub">No content script runs on a site you have not switched on. CopyPasta never reads what you copy, and makes no network requests at all.</div>
+    </div>
+    <div class="facts" style="left:64px;top:424px;">
+      <div class="prompt">$ copypasta --privacy</div>
+      <table>
+        <tr><td>telemetry</td><td class="good">none</td></tr>
+        <tr><td>network requests</td><td class="good">0</td></tr>
+        <tr><td>clipboard reads</td><td class="good">never</td></tr>
+        <tr><td>stored</td><td class="val">your list of sites</td></tr>
+      </table>
+    </div>
+    <div class="minibar" style="left:620px;top:44px;width:442px">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="url">news.example.com/world</span>
+      <span class="ext" style="border-color:rgba(43,35,48,.25)"><img src="../../icons/inactive-48.png" alt=""></span>
+    </div>
+    <div class="pop" style="left:620px;top:112px;transform-origin:top left;transform:scale(1.38)">
+      <iframe data-frame="3"></iframe>
+    </div>
+    ${mascot({ x: 790, y: 408, size: 340 })}
+    <div class="sticker" style="left:646px;top:452px">off here <span class="ok">&#10003;</span></div>
+  `,
+};
+
+const frame = Number((location.hash || '#1').slice(1)) || 1;
+document.getElementById('shot').innerHTML = FRAMES[frame]();
+
+// Each iframe loads the extension's real popup against a stubbed chrome.* API,
+// and reports its rendered height so the card hugs its content.
+for (const f of document.querySelectorAll('iframe')) {
+  f.src = `harness/popup.html?frame=${f.dataset.frame}`;
+}
+addEventListener('message', (e) => {
+  const { frame: n, height } = e.data || {};
+  const f = document.querySelector(`iframe[data-frame="${n}"]`);
+  if (f && height) f.style.height = `${height}px`;
+});
+</script>
+</body>
+</html>

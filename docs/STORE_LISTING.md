@@ -54,10 +54,16 @@ English
 | Asset | Dimensions | Status | Location |
 |---|---|---|---|
 | Store Icon [REQUIRED] | 128×128 PNG | Ready | `icons/active-128.png` |
-| Screenshot 1 [REQUIRED] | 1280×800 | Ready | Toolbar popup showing active status on enabled domain |
-| Screenshot 2 [RECOMMENDED] | 1280×800 | Ready | Toolbar popup drawer managing configured sites list and subdomain settings |
+| Screenshot 1 [REQUIRED] | 1280×800 | Ready | `dist/store/screenshot-1-active.png` — popup active on an enabled site |
+| Screenshot 2 [RECOMMENDED] | 1280×800 | Ready | `dist/store/screenshot-2-sites.png` — "Configured sites" drawer open |
+| Screenshot 3 [RECOMMENDED] | 1280×800 | Ready | `dist/store/screenshot-3-private.png` — inactive on a site nobody enabled, with the privacy facts |
 | Small Promo Tile [OPTIONAL] | 440×280 | Optional | Promo tile with clipboard icon and tagline |
 | Marquee Promo Tile [OPTIONAL] | 1400×560 | Optional | Featured banner |
+
+Screenshots are generated, not hand-made: `npm run store-shots` renders every frame in
+`scripts/store-shot/shot.html` into `dist/store/` with a local headless Chrome. The harness copies `popup.html`, `popup.css`,
+`popup.js` and `site-policy.js` from the repository root and stubs only the `chrome.*` API, so the
+screenshots always show the UI that ships. Upload them on the dashboard's **Store listing** tab.
 
 ---
 
