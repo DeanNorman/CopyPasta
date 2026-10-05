@@ -4,6 +4,8 @@
  *   - copypasta-chrome-extension-social.png  1200x630 Open Graph card (scripts/site-images/og.html)
  *   - apple-touch-icon.png                    180x180 home-screen icon (scripts/site-images/touch-icon.html)
  *   - copypasta-popup-screenshot-{640,1280}.webp  product shot, from dist/store/screenshot-1-active.png
+ * and the Chrome Web Store promo tiles into dist/store/:
+ *   - promo-small-440x280.png, promo-marquee-1400x560.png  (scripts/site-images/promo-*.html)
  *
  * Needs a local Chrome (set CHROME to override) and cwebp. Run `npm run store-shots` first
  * so the product shot matches the shipped popup.
@@ -11,7 +13,7 @@
  *   npm run site-images
  */
 import { execFileSync, spawn } from 'node:child_process';
-import { existsSync, copyFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, copyFileSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -43,8 +45,9 @@ function render(frame, out, width, height) {
     const done = (err) => {
       clearInterval(poll);
       clearTimeout(watchdog);
+      // Remove the throwaway profile once Chrome has really gone, or it races the delete.
+      child.once('exit', () => rmSync(profile, { recursive: true, force: true, maxRetries: 5 }));
       child.kill('SIGKILL');
-      rmSync(profile, { recursive: true, force: true });
       if (err) return reject(err);
       console.log(path.relative(root, out));
       resolve();
@@ -61,6 +64,9 @@ function render(frame, out, width, height) {
 
 await render('og.html', path.join(site, 'copypasta-chrome-extension-social.png'), 1200, 630);
 await render('touch-icon.html', path.join(site, 'apple-touch-icon.png'), 180, 180);
+mkdirSync(path.join(root, 'dist/store'), { recursive: true });
+await render('promo-small.html', path.join(root, 'dist/store/promo-small-440x280.png'), 440, 280);
+await render('promo-marquee.html', path.join(root, 'dist/store/promo-marquee-1400x560.png'), 1400, 560);
 copyFileSync(path.join(root, 'icons/active-32.png'), path.join(site, 'favicon-32.png'));
 console.log('site/favicon-32.png');
 

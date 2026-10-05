@@ -57,13 +57,14 @@ English
 | Screenshot 1 [REQUIRED] | 1280×800 | Ready | `dist/store/screenshot-1-active.png` — popup active on an enabled site |
 | Screenshot 2 [RECOMMENDED] | 1280×800 | Ready | `dist/store/screenshot-2-sites.png` — "Configured sites" drawer open |
 | Screenshot 3 [RECOMMENDED] | 1280×800 | Ready | `dist/store/screenshot-3-private.png` — inactive on a site nobody enabled, with the privacy facts |
-| Small Promo Tile [OPTIONAL] | 440×280 | Optional | Promo tile with clipboard icon and tagline |
-| Marquee Promo Tile [OPTIONAL] | 1400×560 | Optional | Featured banner |
+| Small Promo Tile [OPTIONAL] | 440×280 | Ready | `dist/store/promo-small-440x280.png` — mascot and "Paste freely." |
+| Marquee Promo Tile [OPTIONAL] | 1400×560 | Ready | `dist/store/promo-marquee-1400x560.png` — the site's hero as a banner |
 
 Screenshots are generated, not hand-made: `npm run store-shots` renders every frame in
 `scripts/store-shot/shot.html` into `dist/store/` with a local headless Chrome. The harness copies `popup.html`, `popup.css`,
 `popup.js` and `site-policy.js` from the repository root and stubs only the `chrome.*` API, so the
-screenshots always show the UI that ships. Upload them on the dashboard's **Store listing** tab.
+screenshots always show the UI that ships. The promo tiles come from `npm run site-images`
+(frames in `scripts/site-images/promo-*.html`). Upload them on the dashboard's **Store listing** tab.
 
 ---
 
