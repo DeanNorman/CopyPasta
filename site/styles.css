@@ -303,3 +303,16 @@ h2 {
 /* Product screenshot under "How it works" */
 .shot { margin: 48px auto 0; max-width: 960px; }
 .shot img { display: block; width: 100%; height: auto; border-radius: 16px; border: 3px solid var(--ink); }
+
+/* Cookie consent banner */
+.consent {
+  position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 10;
+  max-width: 640px; margin: 0 auto; padding: 18px 20px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px;
+  background: var(--cream); color: var(--ink);
+  border: 3px solid var(--ink); border-radius: 16px; box-shadow: 0 6px 0 var(--ink);
+}
+.consent[hidden] { display: none; }
+.consent-text { flex: 1 1 280px; margin: 0; font: 500 15px/1.5 var(--rounded); }
+.consent-actions { display: flex; gap: 10px; }
+.consent .btn { padding: 10px 18px; font-size: 15px; cursor: pointer; }
