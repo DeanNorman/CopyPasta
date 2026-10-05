@@ -24,14 +24,6 @@
 <meta name="twitter:description" content="CopyPasta restores copy, cut and paste on websites that deliberately disable clipboard events. Open source, opt-in per site, zero telemetry.">
 <meta name="twitter:image" content="https://deannorman.github.io/CopyPasta/copypasta-chrome-extension-social.png">
 <meta name="twitter:image:alt" content="The CopyPasta spaghetti-bowl mascot beside the headline: Paste freely. Your data stays yours.">
-<!-- Google Analytics for this website only. The extension itself sends nothing. -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDE18KBJ8M"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-TDE18KBJ8M');
-</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -208,10 +200,20 @@
     <span class="wordmark wordmark-sm">copy<span class="accent-dark">pasta</span></span>
     <span>open source · manifest v3 · the extension sends nothing · this site uses Google Analytics</span>
     <a class="footer-link" href="https://github.com/DeanNorman/CopyPasta/blob/main/PRIVACY.md">privacy</a>
+    <a class="footer-link" href="#" data-consent-open>cookies</a>
     <a class="footer-link" href="https://github.com/DeanNorman/CopyPasta">github</a>
   </div>
 </footer>
 
+</div>
+
+<!-- Cookie consent: Google Analytics loads only after "Accept" (see main.js). -->
+<div class="consent" role="dialog" aria-labelledby="consent-title" hidden>
+  <p id="consent-title" class="consent-text">This website uses Google Analytics cookies to count visits, only if you agree. The extension itself never sends anything.</p>
+  <div class="consent-actions">
+    <button class="btn btn-secondary" type="button" data-consent="denied">Decline</button>
+    <button class="btn btn-primary" type="button" data-consent="granted">Accept</button>
+  </div>
 </div>
 
 <script src="main.js"></script>
