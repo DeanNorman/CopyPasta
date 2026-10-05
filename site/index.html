@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CopyPasta</title>
+<title>CopyPasta: re-enable copy and paste on any website (Chrome extension)</title>
 <meta name="description" content="CopyPasta restores copy, cut and paste on websites that deliberately disable clipboard events. Open source, opt-in per site, zero telemetry.">
 <meta name="google-site-verification" content="Q7U92V1SUy-u3KwpnO6GZsTx5Z57y-hUOcj2z6qh9Gs">
 <link rel="canonical" href="https://deannorman.github.io/CopyPasta/">
@@ -24,6 +24,30 @@
 <meta name="twitter:description" content="CopyPasta restores copy, cut and paste on websites that deliberately disable clipboard events. Open source, opt-in per site, zero telemetry.">
 <meta name="twitter:image" content="https://deannorman.github.io/CopyPasta/copypasta-chrome-extension-social.png">
 <meta name="twitter:image:alt" content="The CopyPasta spaghetti-bowl mascot beside the headline: Paste freely. Your data stays yours.">
+<!-- Google Analytics for this website only. The extension itself sends nothing. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDE18KBJ8M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TDE18KBJ8M');
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CopyPasta",
+  "description": "Restores copy, cut and paste on websites that deliberately disable clipboard events. Opt-in per site, zero telemetry.",
+  "applicationCategory": "BrowserApplication",
+  "operatingSystem": "Chrome",
+  "url": "https://deannorman.github.io/CopyPasta/",
+  "downloadUrl": "https://chromewebstore.google.com/detail/copypasta/npajkmmfacjbillmmbciijmebjhiokke",
+  "image": "https://deannorman.github.io/CopyPasta/copypasta-chrome-extension-social.png",
+  "license": "https://opensource.org/licenses/MIT",
+  "author": { "@type": "Person", "name": "Dean Norman", "url": "https://github.com/DeanNorman" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -182,7 +206,7 @@
 <footer class="site-footer">
   <div class="footer-inner wrap">
     <span class="wordmark wordmark-sm">copy<span class="accent-dark">pasta</span></span>
-    <span>open source · manifest v3 · zero telemetry</span>
+    <span>open source · manifest v3 · the extension sends nothing · this site uses Google Analytics</span>
     <a class="footer-link" href="https://github.com/DeanNorman/CopyPasta/blob/main/PRIVACY.md">privacy</a>
     <a class="footer-link" href="https://github.com/DeanNorman/CopyPasta">github</a>
   </div>
