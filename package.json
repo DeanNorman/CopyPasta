@@ -25,7 +25,8 @@
   "scripts": {
     "test": "node --test tests/*.test.js",
     "generate-icons": "node scripts/generate-icons.js",
-    "store-shots": "node scripts/make-store-shots.js"
+    "store-shots": "node scripts/make-store-shots.js",
+    "site-images": "node scripts/make-site-images.js"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268"

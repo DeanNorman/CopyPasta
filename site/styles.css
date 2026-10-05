@@ -299,3 +299,7 @@ h2 {
   .wrap { padding-left: 20px; padding-right: 20px; }
   .sticker { left: 0; }
 }
+
+/* Product screenshot under "How it works" */
+.shot { margin: 48px auto 0; max-width: 960px; }
+.shot img { display: block; width: 100%; height: auto; border-radius: 16px; border: 3px solid var(--ink); }
