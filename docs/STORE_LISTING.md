@@ -10,33 +10,35 @@ This document contains the copy, asset specifications, and compliance justificat
 CopyPasta
 
 **Short Description** [REQUIRED]  
-Restores copy, cut, and paste on sites that block it. Opt-in, per-site. No telemetry. No tracking. Open source.  
-*(116 / 132 characters)*
+Restores copy, cut, and paste on sites that block it. Opt-in, per-site. No telemetry.  
+*(85 / 132 characters. The dashboard takes this from `manifest.json` "description"; change it there.)*
 
 **Detailed Description** [REQUIRED]  
-CopyPasta restores normal copy, cut, and paste functionality on websites that block, intercept, or disable clipboard actions.
+CopyPasta restores normal copy, cut, and paste on websites that block them.
 
-Many banking portals, password forms, and corporate web applications intentionally disable clipboard paste, making it frustrating to use secure password managers and enter long numbers. CopyPasta puts you back in control of your browser.
+Some banking portals, password forms and web apps deliberately block paste. That makes password managers harder to use and turns long reference numbers into retyping errors. CopyPasta lets you switch that blocking off, one site at a time.
 
-Key Features:
-- Opt-In Protection: The extension stays completely idle and inactive until you specifically enable it for a website.
-- One-Click Toggle: Click the extension icon in your browser toolbar to instantly enable or pause protection for the current site.
-- Subdomain Matching: Choose whether to protect a single site or all of its subdomains with a simple switch.
-- Account Sync: Optionally synchronize your enabled site list across your devices using your logged-in Google account.
-- Private and Local: Runs entirely in your browser with zero remote servers, no telemetry, and no tracking.
-- Zero Dependencies: Auditable, lightweight open-source code.
+What it does:
+- Opt-in, per site: CopyPasta does nothing until you switch it on for a website.
+- One-click toggle: click the toolbar icon to switch it on or pause it for the current site.
+- Subdomains: choose whether a rule covers only that site or its subdomains too.
+- Your site list: see every site you have enabled, change its subdomain setting, or remove it.
+- Follows Chrome sync: if Chrome sync is on, your site list follows you to your other signed-in browsers.
 
-How to Use CopyPasta:
-1. Navigate to any website that blocks paste or right-click copy.
+How to use it:
+1. Go to a website that blocks paste.
 2. Click the CopyPasta icon in your toolbar.
-3. Toggle the switch to ON. Paste is restored immediately.
-4. Manage rules or subdomain settings anytime in the popup drawer.
+3. Switch it on. If paste does not work straight away, reload the page.
+4. Open "Configured sites" in the popup to manage or remove sites.
 
-Privacy & Security:
-CopyPasta never reads, saves, or transmits the contents of your clipboard. It does not monitor your browsing history, run analytics, or connect to external servers. Your settings remain entirely on your local machine unless you explicitly turn on Chrome account sync.
+Privacy:
+CopyPasta never reads, saves or sends what you copy or paste. It makes no network requests, runs no analytics and has no server. The only thing it stores is your list of enabled sites, in your browser's own storage. Privacy policy: https://github.com/DeanNorman/CopyPasta/blob/main/PRIVACY.md
 
-Support & Source:
-CopyPasta is open source under the MIT License. For bug reports or feature requests, visit https://github.com/DeanNorman/CopyPasta/issues.
+Website:
+How it works, with screenshots: https://deannorman.github.io/CopyPasta/
+
+Open source:
+MIT licensed. Source code, bug reports and feature requests: https://github.com/DeanNorman/CopyPasta
 
 **Category** [REQUIRED]  
 Productivity
@@ -46,6 +48,16 @@ Restores normal browser copy, cut, and paste functionality on websites that disa
 
 **Primary Language** [REQUIRED]  
 English
+
+**Homepage URL** [RECOMMENDED]  
+https://deannorman.github.io/CopyPasta/
+
+**Support URL** [RECOMMENDED]  
+https://github.com/DeanNorman/CopyPasta/issues
+
+> **Not live yet (2026-10-08):** the "Website" paragraph and the Homepage URL are not on the
+> published listing. Paste both on the dashboard's **Store listing** tab and submit for review.
+> Everything else above matches the live listing.
 
 ---
 
@@ -77,4 +89,4 @@ See [PERMISSIONS.md](PERMISSIONS.md) for full technical justifications to submit
 ## Privacy Certification
 
 - **Data Collection:** No user data is collected, transmitted, or sold.
-- **Privacy Policy URL:** `https://github.com/DeanNorman/CopyPasta/blob/main/SECURITY.md`
+- **Privacy Policy URL:** `https://github.com/DeanNorman/CopyPasta/blob/main/PRIVACY.md`
